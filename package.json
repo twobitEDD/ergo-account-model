@@ -1,5 +1,5 @@
 {
-  "name": "@twobitEDD/ergo-account-model",
+  "name": "@twobitedd/ergo-account-model",
   "version": "0.1.0",
   "description": "Provider-agnostic account and session model for Ergo apps.",
   "license": "MIT",

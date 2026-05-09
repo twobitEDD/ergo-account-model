@@ -11,7 +11,7 @@
 
 ## What was missing in current setup
 
-- `@twobitEDD/ergo-account-model` did not include an explicit signer abstraction.
+- `@twobitedd/ergo-account-model` did not include an explicit signer abstraction.
 - Consumers still had to branch on wallet source in feature components (for example, Tic-Tac-Toe page logic).
 - Dynamic-backed and vault-backed signer executors were not surfaced through account-model context.
 - Day1 ratification mode handling did not expose a distinct `public-sponsor` signer mode.
@@ -24,7 +24,7 @@
 
 ## What was added now
 
-- Added signer abstraction types and resolver contract to `@twobitEDD/ergo-account-model`:
+- Added signer abstraction types and resolver contract to `@twobitedd/ergo-account-model`:
   - `src/types.ts`
   - `src/signers.ts`
   - `src/provider.tsx`
