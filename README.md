@@ -1,4 +1,4 @@
-# @ergo-games/account-model
+# @twobitEDD/ergo-account-model
 
 Provider-agnostic account/session abstraction for Ergo apps, centered on user
 sovereignty and account abstraction compatibility.
@@ -6,7 +6,7 @@ sovereignty and account abstraction compatibility.
 ## Install
 
 ```bash
-npm install @ergo-games/account-model
+npm install @twobitEDD/ergo-account-model
 ```
 
 ## Public API
@@ -37,7 +37,7 @@ self-custody vault, and external/public sponsor paths.
 ## Usage
 
 ```ts
-import { buildAccountSession } from "@ergo-games/account-model";
+import { buildAccountSession } from "@twobitEDD/ergo-account-model";
 
 const session = buildAccountSession({
   walletConnected: true,
@@ -63,13 +63,13 @@ from app-specific data-fetching:
 Use the root package from sibling projects:
 
 ```bash
-"@ergo-games/account-model": "file:../ergo-account-model"
+"@twobitEDD/ergo-account-model": "file:../ergo-account-model"
 ```
 
 For nested consumers:
 
 ```bash
-"@ergo-games/account-model": "file:../../ergo-account-model"
+"@twobitEDD/ergo-account-model": "file:../../ergo-account-model"
 ```
 
 ## Local development
