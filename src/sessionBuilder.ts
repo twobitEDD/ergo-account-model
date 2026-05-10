@@ -7,6 +7,7 @@ import {
   AccountAuthorityKind,
   VaultSnapshot,
 } from "./types";
+import { buildAccountConversionSnapshot, buildAccountStateSnapshot } from "./accountState";
 
 export type WalletSourceKind =
   | "dynamic-nautilus"
@@ -22,7 +23,10 @@ export interface BuildSessionInput {
     id?: string;
     userId?: string;
     email?: string;
+    externalAuthRef?: string;
   } | null;
+  accountId?: string | null;
+  externalAuthRef?: string | null;
   vault: VaultSnapshot | null;
   nautilusApiAvailable: boolean;
 }
@@ -89,6 +93,8 @@ export const buildAccountSession = (input: BuildSessionInput): AccountSession =>
   const authority = deriveAuthority(input.walletSource);
   const provider = deriveProvider(input.walletSource);
   const identity: AccountIdentity = {
+    accountId: input.accountId ?? input.dynamicUser?.userId ?? input.dynamicUser?.id ?? null,
+    externalAuthRef: input.externalAuthRef ?? input.dynamicUser?.externalAuthRef ?? null,
     authority,
     provider,
     ergoAddress: input.ergoAddress,
@@ -96,11 +102,20 @@ export const buildAccountSession = (input: BuildSessionInput): AccountSession =>
     displayName: input.dynamicUser?.email || null,
   };
 
-  return {
+  const session: AccountSession = {
     status: deriveStatus(input.walletConnected, input.ergoAddress),
     identity,
     isDynamicAuthenticated: Boolean(input.dynamicUser),
     isSelfCustodyReady: Boolean(input.vault),
     migration: buildMigrationPlan(input),
+  };
+
+  const state = buildAccountStateSnapshot({ session });
+  const conversion = buildAccountConversionSnapshot({ session, state });
+
+  return {
+    ...session,
+    state,
+    conversion,
   };
 };

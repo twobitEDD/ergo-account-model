@@ -1,12 +1,34 @@
 export type AccountProviderKind = "dynamic" | "nautilus" | "vault" | "none";
+export type AccountType = "GUEST" | "REGISTERED" | "WALLET_BOUND";
 export type AccountAuthorityKind = "dynamic-session" | "nautilus-eip12" | "self-custody-vault" | "none";
 export type AccountSessionStatus = "disconnected" | "connected" | "connected-readonly";
 export interface AccountIdentity {
+    accountId: string | null;
+    externalAuthRef?: string | null;
     authority: AccountAuthorityKind;
     provider: AccountProviderKind;
     ergoAddress: string | null;
     userHandle: string | null;
     displayName: string | null;
+}
+export interface AccountStateSnapshot {
+    accountType: AccountType;
+    accountId: string | null;
+    externalAuthRef?: string | null;
+    isAuthenticated: boolean;
+    hasWalletBinding: boolean;
+    hasExternalAuth: boolean;
+}
+export interface AccountConversionSnapshot {
+    sourceType: AccountType;
+    targetType: AccountType;
+    accountId: string | null;
+    externalAuthRef?: string | null;
+    conversionState: "none" | "eligible" | "completed";
+    canPromoteToRegistered: boolean;
+    canBindWallet: boolean;
+    canDetachFromExternalAuth: boolean;
+    notes: string[];
 }
 export interface AccountMigrationPlan {
     canExportEncryptedVault: boolean;
@@ -47,6 +69,27 @@ export interface AccountSession {
     isDynamicAuthenticated: boolean;
     isSelfCustodyReady: boolean;
     migration: AccountMigrationPlan;
+    state?: AccountStateSnapshot;
+    conversion?: AccountConversionSnapshot;
+}
+export type AccountBootstrapSource = "local-register" | "local-login" | "dynamic-bridge" | "sync-bootstrap" | "unknown";
+export type AccountLifecycleStage = "anonymous" | "authenticated" | "self-custody-ready" | "wallet-bound" | "migratable";
+export interface AccountLifecycleDimensions {
+    accountType: AccountType;
+    isAuthenticated: boolean;
+    hasWalletBinding: boolean;
+    isDynamicAuthenticated: boolean;
+    isSelfCustodyReady: boolean;
+    canMigrateWithoutProviderLockIn: boolean;
+}
+export interface AccountLifecycleSnapshot {
+    stage: AccountLifecycleStage;
+    derivedStage: AccountLifecycleStage;
+    bootstrapSource: AccountBootstrapSource;
+    sovereigntyScore: number;
+    canMigrateWithoutProviderLockIn: boolean;
+    dimensions: AccountLifecycleDimensions;
+    indicators: string[];
 }
 export interface AccountExportEncryptedVault {
     format: string;

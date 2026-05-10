@@ -1,5 +1,10 @@
 export { buildAccountSession } from "./sessionBuilder";
+export { buildAccountStateSnapshot, buildAccountConversionSnapshot } from "./accountState";
 export { buildAccountExportArtifact } from "./exportArtifact";
+export { ACCOUNT_EXPORT_LATEST_VERSION, ACCOUNT_EXPORT_SCHEMA, createNoopMnemonicStrategy, createNoopNautilusMigrationAdapter, executeMigration, parseExportArtifact, planMigration, upgradeArtifactToV2, } from "./portability";
+export { buildExportArtifact, validateExportArtifact } from "./portability/artifact";
+export { getPortabilityStatus } from "./portability/status";
+export { buildAccountLifecycleSnapshot } from "./lifecycle";
 export { buildDefaultSigners, resolveSignerSnapshot } from "./signers";
 export { DynamicAccountAdapter, NautilusAccountAdapter, VaultAccountAdapter, NoneAccountAdapter, buildAdapter, } from "./adapters";
 export { AccountModelProvider, useAccountModel } from "./provider";

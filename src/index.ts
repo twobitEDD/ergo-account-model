@@ -12,6 +12,12 @@ export type {
   AccountSignerResult,
   AccountSignerSnapshot,
   AccountAuthorityKind,
+  AccountBootstrapSource,
+  AccountConversionSnapshot,
+  AccountStateSnapshot,
+  AccountType,
+  AccountLifecycleStage,
+  AccountLifecycleSnapshot,
   AccountExportArtifact,
   AccountExportEncryptedVault,
   AccountExportWalletBinding,
@@ -22,8 +28,48 @@ export type {
 } from "./types";
 export type { WalletSourceKind, BuildSessionInput } from "./sessionBuilder";
 export { buildAccountSession } from "./sessionBuilder";
+export type { BuildAccountStateInput, BuildAccountConversionInput } from "./accountState";
+export { buildAccountStateSnapshot, buildAccountConversionSnapshot } from "./accountState";
 export type { BuildAccountExportArtifactInput } from "./exportArtifact";
 export { buildAccountExportArtifact } from "./exportArtifact";
+export type {
+  AccountExportArtifactAny,
+  AccountExportArtifactV2,
+  BuildExportArtifactInput,
+  CapabilityReport,
+  ExecuteMigrationInput,
+  ExportedEncryptedWalletContainerV2,
+  GetPortabilityStatusInput,
+  LegacyAccountExportArtifactV1,
+  LinkedAuthProviderMetadataV2,
+  MigrationExecutionContext,
+  MigrationExecutionOutcome,
+  MigrationExecutionStatus,
+  MigrationPlan,
+  MigrationTargetAdapter,
+  MigrationTargetCapability,
+  MigrationTargetKind,
+  MnemonicCapabilityReport,
+  MnemonicPortabilityStrategy,
+  MnemonicRecoveryMetadata,
+  PlanMigrationInput,
+  PortabilityCapabilityState,
+  PortabilityStatus,
+} from "./portability";
+export {
+  ACCOUNT_EXPORT_LATEST_VERSION,
+  ACCOUNT_EXPORT_SCHEMA,
+  createNoopMnemonicStrategy,
+  createNoopNautilusMigrationAdapter,
+  executeMigration,
+  parseExportArtifact,
+  planMigration,
+  upgradeArtifactToV2,
+} from "./portability";
+export { buildExportArtifact, validateExportArtifact } from "./portability/artifact";
+export { getPortabilityStatus } from "./portability/status";
+export type { BuildAccountLifecycleInput } from "./lifecycle";
+export { buildAccountLifecycleSnapshot } from "./lifecycle";
 export { buildDefaultSigners, resolveSignerSnapshot } from "./signers";
 export {
   DynamicAccountAdapter,

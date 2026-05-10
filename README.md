@@ -12,7 +12,15 @@ npm install @twobitedd/ergo-account-model
 ## Public API
 
 - `buildAccountSession(input)` for pure session derivation.
+- `buildAccountStateSnapshot({ session })` for canonical account state (`GUEST | REGISTERED | WALLET_BOUND`).
+- `buildAccountConversionSnapshot({ session })` for account conversion posture and next target state.
 - `buildAccountExportArtifact(input)` for portable wallet/account backup payloads.
+- `getPortabilityStatus({ session, mnemonicStrategy? })` for reusable migration capability posture.
+- `buildExportArtifact(input)` for standardized export artifact schema v2.
+- `validateExportArtifact(artifact)` / `parseExportArtifact(artifact)` for artifact validation and parsing.
+- `planMigration({ session, adapter, artifact? })` and `executeMigration({ session, adapter, artifact? })` for adapter-driven authority transitions.
+- `createNoopNautilusMigrationAdapter()` and `createNoopMnemonicStrategy()` as safe runtime seams.
+- `buildAccountLifecycleSnapshot(input)` for bootstrap/sovereignty lifecycle posture.
 - `buildAdapter({ identity, migration })` for provider adapter snapshots.
 - `buildDefaultSigners(input)` and `resolveSignerSnapshot(signers)` for provider-agnostic signer modeling.
 - `AccountModelProvider` and `useAccountModel()` for React context wiring.
@@ -34,6 +42,38 @@ This keeps sovereignty guarantees explicit: Dynamic is treated as an auth
 provider, while actual signing authority remains switchable between Nautilus,
 self-custody vault, and external/public sponsor paths.
 
+## Dynamic-first, user-sovereign migration
+
+This package now includes a provider-agnostic portability subsystem under
+`src/portability` so Dynamic-first onboarding can transition to
+user-controlled ownership without project-specific rewrites.
+
+- **Artifact v2:** standardized `ergo-account-export` schema version `2` with:
+  - canonical identity reference (`accountId` / wallet / external ref fallback)
+  - optional linked auth provider metadata
+  - wallet authority summary + migration posture
+  - optional encrypted wallet container metadata
+  - deterministic integrity checksum metadata
+  - compatibility fields (`minReaderVersion`, `maxKnownVersion`)
+- **Backward compatible:** v1 artifacts remain valid for parse/validation, and
+  can be upgraded via `upgradeArtifactToV2(...)`.
+- **Mnemonic safety:** mnemonic export is modeled as capability + requirements.
+  The default strategy intentionally does not emit plaintext seed phrases.
+- **Nautilus hooks:** `MigrationTargetAdapter` provides capability checks and
+  execute contracts, with a no-op Nautilus adapter for safe integration.
+
+### Typical integration flow
+
+1. Build a provider-agnostic account session with `buildAccountSession(...)`.
+2. Resolve portability posture with `getPortabilityStatus(...)`.
+3. Create v2 artifact with `buildExportArtifact(...)`.
+4. Validate using `validateExportArtifact(...)` before persistence/export.
+5. Build migration plan via `planMigration(...)`.
+6. Execute adapter-driven migration using `executeMigration(...)`.
+
+See `docs/dynamic-user-sovereign-migration.md` for a downstream integration
+guide.
+
 ## Usage
 
 ```ts
@@ -49,6 +89,10 @@ const session = buildAccountSession({
 });
 ```
 
+`AccountIdentity` now includes canonical `accountId` and optional `externalAuthRef` fields.
+`buildAccountLifecycleSnapshot` keeps the existing `stage` field while adding orthogonal
+`dimensions` and `derivedStage` for migration-safe evolution.
+
 The provider accepts already-resolved app data to keep this package independent
 from app-specific data-fetching:
 
@@ -58,19 +102,16 @@ from app-specific data-fetching:
 - `ergoAddress`
 - `vault`
 
-## Local linking in this repo
+## Dependency string guidance
 
-Use the root package from sibling projects:
-
-```bash
-"@twobitedd/ergo-account-model": "file:../ergo-account-model"
-```
-
-For nested consumers:
+For published/public consumers, use a semver range:
 
 ```bash
-"@twobitedd/ergo-account-model": "file:../../ergo-account-model"
+"@twobitedd/ergo-account-model": "^0.2.0"
 ```
+
+If you are iterating inside this monorepo, you can temporarily swap to a local
+`file:` dependency during development.
 
 ## Local development
 

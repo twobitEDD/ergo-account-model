@@ -1,3 +1,4 @@
+import { buildAccountConversionSnapshot, buildAccountStateSnapshot } from "./accountState";
 const deriveAuthority = (source) => {
     if (source === "dynamic-nautilus" || source === "nautilus-direct") {
         return "nautilus-eip12";
@@ -48,21 +49,30 @@ const buildMigrationPlan = (input) => {
     };
 };
 export const buildAccountSession = (input) => {
-    var _a;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j;
     const authority = deriveAuthority(input.walletSource);
     const provider = deriveProvider(input.walletSource);
     const identity = {
+        accountId: (_e = (_c = (_a = input.accountId) !== null && _a !== void 0 ? _a : (_b = input.dynamicUser) === null || _b === void 0 ? void 0 : _b.userId) !== null && _c !== void 0 ? _c : (_d = input.dynamicUser) === null || _d === void 0 ? void 0 : _d.id) !== null && _e !== void 0 ? _e : null,
+        externalAuthRef: (_h = (_f = input.externalAuthRef) !== null && _f !== void 0 ? _f : (_g = input.dynamicUser) === null || _g === void 0 ? void 0 : _g.externalAuthRef) !== null && _h !== void 0 ? _h : null,
         authority,
         provider,
         ergoAddress: input.ergoAddress,
         userHandle: deriveUserHandle(input.dynamicUser),
-        displayName: ((_a = input.dynamicUser) === null || _a === void 0 ? void 0 : _a.email) || null,
+        displayName: ((_j = input.dynamicUser) === null || _j === void 0 ? void 0 : _j.email) || null,
     };
-    return {
+    const session = {
         status: deriveStatus(input.walletConnected, input.ergoAddress),
         identity,
         isDynamicAuthenticated: Boolean(input.dynamicUser),
         isSelfCustodyReady: Boolean(input.vault),
         migration: buildMigrationPlan(input),
+    };
+    const state = buildAccountStateSnapshot({ session });
+    const conversion = buildAccountConversionSnapshot({ session, state });
+    return {
+        ...session,
+        state,
+        conversion,
     };
 };

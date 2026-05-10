@@ -8,7 +8,10 @@ export interface BuildSessionInput {
         id?: string;
         userId?: string;
         email?: string;
+        externalAuthRef?: string;
     } | null;
+    accountId?: string | null;
+    externalAuthRef?: string | null;
     vault: VaultSnapshot | null;
     nautilusApiAvailable: boolean;
 }
