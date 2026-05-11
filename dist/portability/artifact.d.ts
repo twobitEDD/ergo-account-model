@@ -62,10 +62,28 @@ export interface AccountExportArtifactV2 {
         current: string;
         runWithoutDynamic: boolean;
         summary: string[];
+        serverRegistry?: {
+            registryId: string;
+            userId: string | null;
+            continuityKey?: string | null;
+            recoveryEmail?: string | null;
+        };
     };
     migration: {
         portabilityStatus: PortabilityStatus;
         plannedAt: string;
+        nautilusLinkage?: {
+            status: string;
+            address?: string | null;
+            network?: string | null;
+            note?: string;
+        };
+    };
+    recovery?: {
+        channel: "email-service" | "manual-export" | "none";
+        contact?: string | null;
+        continuityGuaranteed: boolean;
+        notes: string[];
     };
     encryptedWallet?: ExportedEncryptedWalletContainerV2;
     integrity: {
@@ -84,6 +102,12 @@ export interface BuildExportArtifactInput {
     appVersion?: string;
     authProviders?: LinkedAuthProviderMetadataV2[];
     encryptedWallet?: ExportedEncryptedWalletContainerV2;
+    recovery?: {
+        channel: "email-service" | "manual-export" | "none";
+        contact?: string | null;
+        continuityGuaranteed?: boolean;
+        notes?: string[];
+    };
     notes?: string[];
     exportedAt?: Date;
 }

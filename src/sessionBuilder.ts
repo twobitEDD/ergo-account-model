@@ -5,7 +5,11 @@ import {
   AccountSession,
   AccountSessionStatus,
   AccountAuthorityKind,
+  NautilusLinkageState,
+  ProviderLinkMetadata,
+  ServerRegistryAuthorityRef,
   VaultSnapshot,
+  WalletMigrationState,
 } from "./types";
 import { buildAccountConversionSnapshot, buildAccountStateSnapshot } from "./accountState";
 
@@ -27,6 +31,9 @@ export interface BuildSessionInput {
   } | null;
   accountId?: string | null;
   externalAuthRef?: string | null;
+  providerLinks?: ProviderLinkMetadata[];
+  serverRegistry?: ServerRegistryAuthorityRef;
+  recoveryEmail?: string | null;
   vault: VaultSnapshot | null;
   nautilusApiAvailable: boolean;
 }
@@ -80,12 +87,34 @@ const buildMigrationPlan = (input: BuildSessionInput): AccountMigrationPlan => {
     notes.push("Dynamic login is optional for Nautilus-only operation.");
   }
 
+  const nautilusLinkage: NautilusLinkageState = {
+    status: input.walletSource === "dynamic-nautilus" || input.walletSource === "nautilus-direct" ? "linked" : "unlinked",
+    address: input.ergoAddress,
+    network: input.ergoAddress ? "erg" : undefined,
+    note:
+      input.nautilusApiAvailable
+        ? "Nautilus runtime detected for optional self-custody handoff."
+        : "Nautilus runtime not detected in this session.",
+  };
+  const walletMigration: WalletMigrationState = {
+    sourceAuthority: deriveAuthority(input.walletSource),
+    targetAuthority: input.nautilusApiAvailable ? "nautilus-eip12" : "none",
+    stage: input.nautilusApiAvailable ? "ready" : "blocked",
+    canExportToNautilus: input.nautilusApiAvailable,
+    canExportToRecoveryService: Boolean(input.recoveryEmail || input.vault?.hasRecoveryWrap),
+    recoveryChannel: input.recoveryEmail ? "email-service" : input.vault?.hasRecoveryWrap ? "manual-export" : "none",
+    capabilityGated: !input.vault?.hasRecoveryWrap,
+    blockers: input.nautilusApiAvailable ? [] : ["Nautilus extension is not currently available."],
+  };
+
   return {
     canExportEncryptedVault: Boolean(input.vault),
     canUseRecoveryPhrase: Boolean(input.vault?.hasRecoveryWrap),
     canLinkNautilus: input.nautilusApiAvailable,
     canRunWithoutDynamic: input.walletSource === "nautilus-direct" || !input.dynamicUser,
     notes,
+    nautilusLinkage,
+    walletMigration,
   };
 };
 
@@ -100,6 +129,17 @@ export const buildAccountSession = (input: BuildSessionInput): AccountSession =>
     ergoAddress: input.ergoAddress,
     userHandle: deriveUserHandle(input.dynamicUser),
     displayName: input.dynamicUser?.email || null,
+    serverRegistry:
+      input.serverRegistry ??
+      (input.accountId
+        ? {
+            authority: "server-registry",
+            registryId: "day1-registry",
+            userId: input.accountId,
+            recoveryEmail: input.recoveryEmail ?? input.dynamicUser?.email ?? null,
+          }
+        : undefined),
+    providerLinks: input.providerLinks,
   };
 
   const session: AccountSession = {

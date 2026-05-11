@@ -36,6 +36,8 @@ export const getPortabilityStatus = (input: GetPortabilityStatusInput): Portabil
       requirements: encryptedExportRequirements,
     },
     mnemonicExport: mnemonicCapability,
+    nautilusLinkage: input.session.migration.nautilusLinkage,
+    walletMigration: input.session.migration.walletMigration,
     notes: input.session.migration.notes,
   };
 };

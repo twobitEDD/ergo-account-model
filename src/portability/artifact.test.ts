@@ -34,12 +34,19 @@ test("buildExportArtifact builds v2 artifact with checksum and canonical identit
     portabilityStatus: status,
     appId: "day1",
     appVersion: "2.0.0",
+    recovery: {
+      channel: "email-service",
+      contact: "portability@example.com",
+      notes: ["Fallback recovery path remains available without Dynamic."],
+    },
   });
 
   assert.equal(artifact.schemaVersion, 2);
   assert.equal(artifact.identity.canonicalId, "acct_portability_01");
   assert.equal(typeof artifact.integrity.checksum, "string");
   assert.ok(artifact.integrity.checksum.length > 0);
+  assert.equal(artifact.authority.serverRegistry?.registryId, "day1-registry");
+  assert.equal(artifact.recovery?.channel, "email-service");
 });
 
 test("validateExportArtifact accepts legacy v1 and v2", () => {

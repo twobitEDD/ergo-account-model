@@ -34,6 +34,11 @@ export const buildAccountExportArtifact = (
       walletStatus: input.walletBinding?.walletStatus ?? null,
     },
     encryptedVault: input.encryptedVault ?? null,
+    portability: {
+      nautilusLinkage: input.session.migration.nautilusLinkage,
+      walletMigration: input.session.migration.walletMigration,
+      recoveryEmail: input.session.identity.serverRegistry?.recoveryEmail ?? null,
+    },
     notes: input.notes ?? [],
   };
 };

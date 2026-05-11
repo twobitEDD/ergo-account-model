@@ -33,7 +33,7 @@ const buildCanonicalIdentity = (session) => {
     };
 };
 export const buildExportArtifact = (input) => {
-    var _a, _b;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
     const exportedAt = ((_a = input.exportedAt) !== null && _a !== void 0 ? _a : new Date()).toISOString();
     const artifactWithoutIntegrity = {
         schema: ACCOUNT_EXPORT_SCHEMA,
@@ -54,13 +54,38 @@ export const buildExportArtifact = (input) => {
             current: input.session.identity.authority,
             runWithoutDynamic: input.session.migration.canRunWithoutDynamic,
             summary: input.session.migration.notes,
+            serverRegistry: input.session.identity.serverRegistry
+                ? {
+                    registryId: input.session.identity.serverRegistry.registryId,
+                    userId: input.session.identity.serverRegistry.userId,
+                    continuityKey: (_b = input.session.identity.serverRegistry.continuityKey) !== null && _b !== void 0 ? _b : null,
+                    recoveryEmail: (_c = input.session.identity.serverRegistry.recoveryEmail) !== null && _c !== void 0 ? _c : null,
+                }
+                : undefined,
         },
         migration: {
             portabilityStatus: input.portabilityStatus,
             plannedAt: exportedAt,
+            nautilusLinkage: input.session.migration.nautilusLinkage
+                ? {
+                    status: input.session.migration.nautilusLinkage.status,
+                    address: (_d = input.session.migration.nautilusLinkage.address) !== null && _d !== void 0 ? _d : null,
+                    network: (_e = input.session.migration.nautilusLinkage.network) !== null && _e !== void 0 ? _e : null,
+                    note: input.session.migration.nautilusLinkage.note,
+                }
+                : undefined,
         },
+        recovery: input.recovery
+            ? {
+                channel: input.recovery.channel,
+                contact: (_f = input.recovery.contact) !== null && _f !== void 0 ? _f : null,
+                continuityGuaranteed: (_g = input.recovery.continuityGuaranteed) !== null && _g !== void 0 ? _g : (input.session.migration.canRunWithoutDynamic &&
+                    ((_h = input.session.migration.walletMigration) === null || _h === void 0 ? void 0 : _h.canExportToRecoveryService) === true),
+                notes: (_j = input.recovery.notes) !== null && _j !== void 0 ? _j : [],
+            }
+            : undefined,
         encryptedWallet: input.encryptedWallet,
-        notes: (_b = input.notes) !== null && _b !== void 0 ? _b : [],
+        notes: (_k = input.notes) !== null && _k !== void 0 ? _k : [],
         sessionSnapshot: input.session,
     };
     const checksum = fnv1a32(stableStringify(artifactWithoutIntegrity));

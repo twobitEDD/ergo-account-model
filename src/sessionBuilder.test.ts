@@ -9,6 +9,14 @@ test("marks vault sessions as self-custody ready", () => {
     ergoAddress: "9abc",
     dynamicUser: { email: "user@example.com" },
     accountId: "acct_123",
+    recoveryEmail: "user@example.com",
+    providerLinks: [
+      {
+        providerId: "dynamic",
+        subjectRef: "dyn_sub_1",
+        status: "linked",
+      },
+    ],
     vault: {
       ergoAddress: "9abc",
       hasPasskeyWrap: true,
@@ -23,6 +31,9 @@ test("marks vault sessions as self-custody ready", () => {
   assert.equal(session.isSelfCustodyReady, true);
   assert.equal(session.migration.canExportEncryptedVault, true);
   assert.equal(session.migration.canUseRecoveryPhrase, true);
+  assert.equal(session.identity.serverRegistry?.authority, "server-registry");
+  assert.equal(session.identity.providerLinks?.[0]?.providerId, "dynamic");
+  assert.equal(session.migration.walletMigration?.canExportToRecoveryService, true);
   assert.equal(session.state?.accountType, "WALLET_BOUND");
   assert.equal(session.conversion?.conversionState, "completed");
 });

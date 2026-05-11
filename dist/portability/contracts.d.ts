@@ -23,6 +23,8 @@ export interface PortabilityStatus {
     canRunWithoutDynamic: boolean;
     encryptedExport: CapabilityReport;
     mnemonicExport: MnemonicCapabilityReport;
+    nautilusLinkage?: AccountSession["migration"]["nautilusLinkage"];
+    walletMigration?: AccountSession["migration"]["walletMigration"];
     notes: string[];
 }
 export type MigrationTargetKind = "nautilus" | "mnemonic" | "custom";

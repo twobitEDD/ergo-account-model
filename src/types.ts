@@ -21,6 +21,59 @@ export interface AccountIdentity {
   ergoAddress: string | null;
   userHandle: string | null;
   displayName: string | null;
+  serverRegistry?: ServerRegistryAuthorityRef;
+  providerLinks?: ProviderLinkMetadata[];
+}
+
+export type ProviderLinkStatus = "linked" | "unlinked" | "conflict";
+
+export interface ProviderLinkMetadata {
+  providerId: AccountProviderKind | "email";
+  subjectRef: string;
+  status: ProviderLinkStatus;
+  linkedAt?: string;
+  lastSeenAt?: string;
+  emailAtLink?: string | null;
+  displayNameAtLink?: string | null;
+}
+
+export interface ServerRegistryAuthorityRef {
+  authority: "server-registry";
+  registryId: string;
+  userId: string | null;
+  continuityKey?: string | null;
+  recoveryEmail?: string | null;
+  lastValidatedAt?: string;
+}
+
+export type NautilusLinkStatus = "unlinked" | "linked" | "pending" | "error";
+
+export interface NautilusLinkageState {
+  status: NautilusLinkStatus;
+  address?: string | null;
+  network?: string | null;
+  linkedAt?: string;
+  lastCheckedAt?: string;
+  note?: string;
+}
+
+export type WalletMigrationStage =
+  | "not-started"
+  | "ready"
+  | "in-progress"
+  | "completed"
+  | "blocked";
+
+export interface WalletMigrationState {
+  sourceAuthority: AccountAuthorityKind;
+  targetAuthority: Extract<AccountAuthorityKind, "nautilus-eip12" | "self-custody-vault" | "none">;
+  stage: WalletMigrationStage;
+  canExportToNautilus: boolean;
+  canExportToRecoveryService: boolean;
+  recoveryChannel: "email-service" | "manual-export" | "none";
+  capabilityGated: boolean;
+  blockers: string[];
+  lastUpdatedAt?: string;
 }
 
 export interface AccountStateSnapshot {
@@ -50,6 +103,8 @@ export interface AccountMigrationPlan {
   canLinkNautilus: boolean;
   canRunWithoutDynamic: boolean;
   notes: string[];
+  nautilusLinkage?: NautilusLinkageState;
+  walletMigration?: WalletMigrationState;
 }
 
 export type AccountSignerMode =
@@ -153,6 +208,11 @@ export interface AccountExportArtifact {
   session: AccountSession;
   walletBinding: AccountExportWalletBinding;
   encryptedVault: AccountExportEncryptedVault | null;
+  portability?: {
+    nautilusLinkage?: NautilusLinkageState;
+    walletMigration?: WalletMigrationState;
+    recoveryEmail?: string | null;
+  };
   notes: string[];
 }
 

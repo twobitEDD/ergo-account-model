@@ -68,10 +68,28 @@ export interface AccountExportArtifactV2 {
     current: string;
     runWithoutDynamic: boolean;
     summary: string[];
+    serverRegistry?: {
+      registryId: string;
+      userId: string | null;
+      continuityKey?: string | null;
+      recoveryEmail?: string | null;
+    };
   };
   migration: {
     portabilityStatus: PortabilityStatus;
     plannedAt: string;
+    nautilusLinkage?: {
+      status: string;
+      address?: string | null;
+      network?: string | null;
+      note?: string;
+    };
+  };
+  recovery?: {
+    channel: "email-service" | "manual-export" | "none";
+    contact?: string | null;
+    continuityGuaranteed: boolean;
+    notes: string[];
   };
   encryptedWallet?: ExportedEncryptedWalletContainerV2;
   integrity: {
@@ -92,6 +110,12 @@ export interface BuildExportArtifactInput {
   appVersion?: string;
   authProviders?: LinkedAuthProviderMetadataV2[];
   encryptedWallet?: ExportedEncryptedWalletContainerV2;
+  recovery?: {
+    channel: "email-service" | "manual-export" | "none";
+    contact?: string | null;
+    continuityGuaranteed?: boolean;
+    notes?: string[];
+  };
   notes?: string[];
   exportedAt?: Date;
 }
@@ -155,11 +179,38 @@ export const buildExportArtifact = (input: BuildExportArtifactInput): AccountExp
       current: input.session.identity.authority,
       runWithoutDynamic: input.session.migration.canRunWithoutDynamic,
       summary: input.session.migration.notes,
+      serverRegistry: input.session.identity.serverRegistry
+        ? {
+            registryId: input.session.identity.serverRegistry.registryId,
+            userId: input.session.identity.serverRegistry.userId,
+            continuityKey: input.session.identity.serverRegistry.continuityKey ?? null,
+            recoveryEmail: input.session.identity.serverRegistry.recoveryEmail ?? null,
+          }
+        : undefined,
     },
     migration: {
       portabilityStatus: input.portabilityStatus,
       plannedAt: exportedAt,
+      nautilusLinkage: input.session.migration.nautilusLinkage
+        ? {
+            status: input.session.migration.nautilusLinkage.status,
+            address: input.session.migration.nautilusLinkage.address ?? null,
+            network: input.session.migration.nautilusLinkage.network ?? null,
+            note: input.session.migration.nautilusLinkage.note,
+          }
+        : undefined,
     },
+    recovery: input.recovery
+      ? {
+          channel: input.recovery.channel,
+          contact: input.recovery.contact ?? null,
+          continuityGuaranteed:
+            input.recovery.continuityGuaranteed ??
+            (input.session.migration.canRunWithoutDynamic &&
+              input.session.migration.walletMigration?.canExportToRecoveryService === true),
+          notes: input.recovery.notes ?? [],
+        }
+      : undefined,
     encryptedWallet: input.encryptedWallet,
     notes: input.notes ?? [],
     sessionSnapshot: input.session,
