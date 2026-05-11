@@ -5,6 +5,10 @@ export type {
   AccountProviderKind,
   AccountSession,
   AccountSessionStatus,
+  ProgressiveAccountCapabilities,
+  ProgressiveLayerCapability,
+  ProgressiveLayerStatus,
+  ProgressiveWalletRequirement,
   AccountSigner,
   AccountSignerAuthority,
   AccountSignerMode,
@@ -26,6 +30,8 @@ export type {
   SessionProvider,
   VaultSnapshot,
 } from "./types";
+export type { BuildProgressiveCapabilitiesInput } from "./capabilities";
+export { buildProgressiveAccountCapabilities } from "./capabilities";
 export type { WalletSourceKind, BuildSessionInput } from "./sessionBuilder";
 export { buildAccountSession } from "./sessionBuilder";
 export type { BuildAccountStateInput, BuildAccountConversionInput } from "./accountState";
@@ -54,6 +60,7 @@ export type {
   MnemonicRecoveryMetadata,
   PlanMigrationInput,
   PortabilityCapabilityState,
+  RecoveryExportHandoffMetadata,
   PortabilityStatus,
 } from "./portability";
 export {

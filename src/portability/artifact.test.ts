@@ -17,6 +17,7 @@ const buildSession = () =>
     ergoAddress: "9portability",
     dynamicUser: { id: "dyn_01", email: "portability@example.com" },
     accountId: "acct_portability_01",
+    recoveryEmail: "portability@example.com",
     vault: {
       ergoAddress: "9portability",
       hasPasskeyWrap: true,
@@ -47,6 +48,8 @@ test("buildExportArtifact builds v2 artifact with checksum and canonical identit
   assert.ok(artifact.integrity.checksum.length > 0);
   assert.equal(artifact.authority.serverRegistry?.registryId, "day1-registry");
   assert.equal(artifact.recovery?.channel, "email-service");
+  assert.equal(artifact.migration.portabilityStatus.serverAuthorityRef?.registryId, "day1-registry");
+  assert.equal(artifact.migration.portabilityStatus.recoveryExportHandoff.recoveryChannel, "email-service");
 });
 
 test("validateExportArtifact accepts legacy v1 and v2", () => {

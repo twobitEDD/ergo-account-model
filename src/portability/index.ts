@@ -28,6 +28,7 @@ export type {
   MnemonicPortabilityStrategy,
   MnemonicRecoveryMetadata,
   PortabilityCapabilityState,
+  RecoveryExportHandoffMetadata,
   PortabilityStatus,
 } from "./contracts";
 

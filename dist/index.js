@@ -1,3 +1,4 @@
+export { buildProgressiveAccountCapabilities } from "./capabilities";
 export { buildAccountSession } from "./sessionBuilder";
 export { buildAccountStateSnapshot, buildAccountConversionSnapshot } from "./accountState";
 export { buildAccountExportArtifact } from "./exportArtifact";

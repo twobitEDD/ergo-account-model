@@ -15,9 +15,18 @@ export interface MnemonicRecoveryMetadata {
 export interface MnemonicCapabilityReport extends CapabilityReport {
     metadata?: MnemonicRecoveryMetadata;
 }
+export interface RecoveryExportHandoffMetadata {
+    recoveryChannel: "email-service" | "manual-export" | "none";
+    continuityGuaranteed: boolean;
+    encryptedVaultAvailable: boolean;
+    recoveryContact?: string | null;
+    notes: string[];
+}
 export interface PortabilityStatus {
     identityRef: string;
     authority: AccountAuthorityKind;
+    serverAuthorityRef?: AccountSession["identity"]["serverRegistry"];
+    providerLinks?: AccountSession["identity"]["providerLinks"];
     isDynamicAuthenticated: boolean;
     hasWalletBinding: boolean;
     canRunWithoutDynamic: boolean;
@@ -25,6 +34,7 @@ export interface PortabilityStatus {
     mnemonicExport: MnemonicCapabilityReport;
     nautilusLinkage?: AccountSession["migration"]["nautilusLinkage"];
     walletMigration?: AccountSession["migration"]["walletMigration"];
+    recoveryExportHandoff: RecoveryExportHandoffMetadata;
     notes: string[];
 }
 export type MigrationTargetKind = "nautilus" | "mnemonic" | "custom";

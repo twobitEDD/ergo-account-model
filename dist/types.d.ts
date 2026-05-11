@@ -115,6 +115,27 @@ export interface AccountSession {
     state?: AccountStateSnapshot;
     conversion?: AccountConversionSnapshot;
 }
+export type ProgressiveWalletRequirement = "none" | "recommended" | "required";
+export type ProgressiveLayerStatus = "active" | "inactive";
+export interface ProgressiveLayerCapability {
+    status: ProgressiveLayerStatus;
+    eligible: boolean;
+    walletRequirement: ProgressiveWalletRequirement;
+    title: string;
+    message: string;
+    actionLabel?: string;
+}
+export interface ProgressiveAccountCapabilities {
+    schema: "ergo-progressive-capabilities";
+    version: 1;
+    sessionActive: boolean;
+    walletBound: boolean;
+    layers: {
+        freePlay: ProgressiveLayerCapability;
+        rewards: ProgressiveLayerCapability;
+        wagering: ProgressiveLayerCapability;
+    };
+}
 export type AccountBootstrapSource = "local-register" | "local-login" | "dynamic-bridge" | "sync-bootstrap" | "unknown";
 export type AccountLifecycleStage = "anonymous" | "authenticated" | "self-custody-ready" | "wallet-bound" | "migratable";
 export interface AccountLifecycleDimensions {
