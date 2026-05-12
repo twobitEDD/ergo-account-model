@@ -136,6 +136,63 @@ export interface ProgressiveAccountCapabilities {
         wagering: ProgressiveLayerCapability;
     };
 }
+export type AccountReadinessState = "ready" | "needs_action";
+export type PayoutRailKind = "ergo" | "paypal";
+export type PayoutRailConnectionState = "connected" | "not_connected" | "coming_soon" | "connectable";
+export interface PayoutRailConnection {
+    rail: PayoutRailKind;
+    state: PayoutRailConnectionState;
+    optional: boolean;
+    note: string;
+    lastCheckedAt?: string;
+}
+export interface AccountProgressionSnapshot {
+    schema: "ergo-account-progression";
+    version: 1;
+    identityReadiness: AccountReadinessState;
+    custodyReadiness: AccountReadinessState;
+    payoutReadiness: AccountReadinessState;
+    overallReadiness: AccountReadinessState;
+    payoutRails: PayoutRailConnection[];
+    nextActionHint?: string;
+    derivedFrom: "backend_truth";
+    updatedAt: string;
+}
+export type TransferMediationMode = "backend_and_onchain";
+export type TransferAssetKind = "ERG" | "REWARD_CREDIT" | "CUSTOM";
+export type TransferIntentStatus = "draft" | "queued_backend" | "awaiting_onchain" | "broadcasting_onchain" | "confirming_onchain" | "completed" | "failed" | "cancelled";
+export interface LinkedAccountRef {
+    userId: string;
+    accountId?: string | null;
+    ergoAddress?: string | null;
+}
+export interface TransferIntentChainProgress {
+    network: "testnet" | "mainnet";
+    txId?: string;
+    confirmations?: number;
+    explorerUrl?: string;
+}
+export interface AccountTransferIntent {
+    intentId: string;
+    mediation: TransferMediationMode;
+    assetKind: TransferAssetKind;
+    amount: string;
+    source: LinkedAccountRef;
+    destination: LinkedAccountRef;
+    status: TransferIntentStatus;
+    createdAt: string;
+    updatedAt: string;
+    idempotencyKey?: string;
+    chainProgress?: TransferIntentChainProgress;
+    failureReason?: string;
+}
+export interface TransferIntentReadModel {
+    intents: AccountTransferIntent[];
+    activeCount: number;
+    completedCount: number;
+    failedCount: number;
+    lastUpdatedAt?: string;
+}
 export type AccountBootstrapSource = "local-register" | "local-login" | "dynamic-bridge" | "sync-bootstrap" | "unknown";
 export type AccountLifecycleStage = "anonymous" | "authenticated" | "self-custody-ready" | "wallet-bound" | "migratable";
 export interface AccountLifecycleDimensions {
