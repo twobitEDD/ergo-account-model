@@ -44,6 +44,8 @@ export type {
 } from "./types";
 export type { BuildProgressiveCapabilitiesInput } from "./capabilities";
 export { buildProgressiveAccountCapabilities } from "./capabilities";
+export type { DynamicUserInput } from "./dynamicUser";
+export { mapDynamicSdkUserToDynamicUserInput } from "./dynamicUser";
 export type { WalletSourceKind, BuildSessionInput } from "./sessionBuilder";
 export { buildAccountSession } from "./sessionBuilder";
 export type { BuildAccountStateInput, BuildAccountConversionInput } from "./accountState";

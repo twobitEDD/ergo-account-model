@@ -1,4 +1,5 @@
 export { buildProgressiveAccountCapabilities } from "./capabilities";
+export { mapDynamicSdkUserToDynamicUserInput } from "./dynamicUser";
 export { buildAccountSession } from "./sessionBuilder";
 export { buildAccountStateSnapshot, buildAccountConversionSnapshot } from "./accountState";
 export { buildAccountExportArtifact } from "./exportArtifact";

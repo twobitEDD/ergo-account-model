@@ -335,6 +335,7 @@ export interface SignerResolutionInput<TDynamicUser = unknown, TVault = unknown>
   session: AccountSession;
   walletConnected: boolean;
   walletSource: string | null | undefined;
+  /** When using Dynamic.xyz, prefer `TDynamicUser extends import("./dynamicUser").DynamicUserInput`. */
   dynamicUser: TDynamicUser | null;
   vault: TVault | null;
   nautilusApiAvailable: boolean;

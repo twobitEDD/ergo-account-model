@@ -11,6 +11,7 @@ import {
   VaultSnapshot,
   WalletMigrationState,
 } from "./types";
+import type { DynamicUserInput } from "./dynamicUser";
 import { buildAccountConversionSnapshot, buildAccountStateSnapshot } from "./accountState";
 
 export type WalletSourceKind =
@@ -23,12 +24,8 @@ export interface BuildSessionInput {
   walletConnected: boolean;
   walletSource: WalletSourceKind;
   ergoAddress: string | null;
-  dynamicUser: {
-    id?: string;
-    userId?: string;
-    email?: string;
-    externalAuthRef?: string;
-  } | null;
+  /** Dynamic.xyz (or compatible) user profile; see {@link DynamicUserInput}. */
+  dynamicUser: DynamicUserInput | null;
   accountId?: string | null;
   externalAuthRef?: string | null;
   providerLinks?: ProviderLinkMetadata[];
@@ -62,7 +59,11 @@ const deriveStatus = (
 };
 
 const deriveUserHandle = (dynamicUser: BuildSessionInput["dynamicUser"]): string | null =>
-  dynamicUser?.email || dynamicUser?.userId || dynamicUser?.id || null;
+  dynamicUser?.email ||
+  dynamicUser?.userId ||
+  dynamicUser?.id ||
+  (dynamicUser?.username ? String(dynamicUser.username) : null) ||
+  null;
 
 const buildMigrationPlan = (input: BuildSessionInput): AccountMigrationPlan => {
   const notes: string[] = [];
@@ -128,7 +129,7 @@ export const buildAccountSession = (input: BuildSessionInput): AccountSession =>
     provider,
     ergoAddress: input.ergoAddress,
     userHandle: deriveUserHandle(input.dynamicUser),
-    displayName: input.dynamicUser?.email || null,
+    displayName: input.dynamicUser?.email || input.dynamicUser?.username || null,
     serverRegistry:
       input.serverRegistry ??
       (input.accountId

@@ -21,7 +21,11 @@ const deriveStatus = (walletConnected, ergoAddress) => {
         return "disconnected";
     return "connected";
 };
-const deriveUserHandle = (dynamicUser) => (dynamicUser === null || dynamicUser === void 0 ? void 0 : dynamicUser.email) || (dynamicUser === null || dynamicUser === void 0 ? void 0 : dynamicUser.userId) || (dynamicUser === null || dynamicUser === void 0 ? void 0 : dynamicUser.id) || null;
+const deriveUserHandle = (dynamicUser) => (dynamicUser === null || dynamicUser === void 0 ? void 0 : dynamicUser.email) ||
+    (dynamicUser === null || dynamicUser === void 0 ? void 0 : dynamicUser.userId) ||
+    (dynamicUser === null || dynamicUser === void 0 ? void 0 : dynamicUser.id) ||
+    ((dynamicUser === null || dynamicUser === void 0 ? void 0 : dynamicUser.username) ? String(dynamicUser.username) : null) ||
+    null;
 const buildMigrationPlan = (input) => {
     var _a, _b, _c, _d;
     const notes = [];
@@ -69,7 +73,7 @@ const buildMigrationPlan = (input) => {
     };
 };
 export const buildAccountSession = (input) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
     const authority = deriveAuthority(input.walletSource);
     const provider = deriveProvider(input.walletSource);
     const identity = {
@@ -79,13 +83,13 @@ export const buildAccountSession = (input) => {
         provider,
         ergoAddress: input.ergoAddress,
         userHandle: deriveUserHandle(input.dynamicUser),
-        displayName: ((_j = input.dynamicUser) === null || _j === void 0 ? void 0 : _j.email) || null,
-        serverRegistry: (_k = input.serverRegistry) !== null && _k !== void 0 ? _k : (input.accountId
+        displayName: ((_j = input.dynamicUser) === null || _j === void 0 ? void 0 : _j.email) || ((_k = input.dynamicUser) === null || _k === void 0 ? void 0 : _k.username) || null,
+        serverRegistry: (_l = input.serverRegistry) !== null && _l !== void 0 ? _l : (input.accountId
             ? {
                 authority: "server-registry",
                 registryId: "day1-registry",
                 userId: input.accountId,
-                recoveryEmail: (_o = (_l = input.recoveryEmail) !== null && _l !== void 0 ? _l : (_m = input.dynamicUser) === null || _m === void 0 ? void 0 : _m.email) !== null && _o !== void 0 ? _o : null,
+                recoveryEmail: (_p = (_m = input.recoveryEmail) !== null && _m !== void 0 ? _m : (_o = input.dynamicUser) === null || _o === void 0 ? void 0 : _o.email) !== null && _p !== void 0 ? _p : null,
             }
             : undefined),
         providerLinks: input.providerLinks,

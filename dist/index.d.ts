@@ -1,6 +1,8 @@
 export type { AccountIdentity, AccountMigrationPlan, AccountProviderAdapter, AccountProviderKind, AccountSession, AccountSessionStatus, ProgressiveAccountCapabilities, AccountProgressionSnapshot, AccountReadinessState, PayoutRailKind, PayoutRailConnectionState, PayoutRailConnection, AccountTransferIntent, TransferIntentReadModel, TransferMediationMode, TransferAssetKind, TransferIntentStatus, LinkedAccountRef, TransferIntentChainProgress, ProgressiveLayerCapability, ProgressiveLayerStatus, ProgressiveWalletRequirement, AccountSigner, AccountSignerAuthority, AccountSignerMode, AccountSignerRequest, AccountSignerResult, AccountSignerSnapshot, AccountAuthorityKind, AccountBootstrapSource, AccountConversionSnapshot, AccountStateSnapshot, AccountType, AccountLifecycleStage, AccountLifecycleSnapshot, AccountExportArtifact, AccountExportEncryptedVault, AccountExportWalletBinding, ResolveAccountSigners, SignerResolutionInput, SessionProvider, VaultSnapshot, } from "./types";
 export type { BuildProgressiveCapabilitiesInput } from "./capabilities";
 export { buildProgressiveAccountCapabilities } from "./capabilities";
+export type { DynamicUserInput } from "./dynamicUser";
+export { mapDynamicSdkUserToDynamicUserInput } from "./dynamicUser";
 export type { WalletSourceKind, BuildSessionInput } from "./sessionBuilder";
 export { buildAccountSession } from "./sessionBuilder";
 export type { BuildAccountStateInput, BuildAccountConversionInput } from "./accountState";

@@ -1,6 +1,6 @@
 {
   "name": "@twobitedd/ergo-account-model",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Provider-agnostic account and session model for Ergo apps.",
   "license": "MIT",
   "repository": {
@@ -16,7 +16,9 @@
     "wallet",
     "account",
     "session",
-    "react"
+    "react",
+    "dynamic",
+    "dynamic.xyz"
   ],
   "type": "module",
   "main": "dist/index.js",
@@ -45,7 +47,7 @@
     "clean": "rm -rf dist",
     "lint": "echo \"account-model lint placeholder\"",
     "prepublishOnly": "npm run clean && npm run build && npm run test",
-    "test": "node --import tsx --test src/**/*.test.ts",
+    "test": "node --import tsx --test src/*.test.ts src/portability/*.test.ts",
     "check": "npm run build && npm run test"
   },
   "peerDependencies": {

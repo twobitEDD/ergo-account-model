@@ -12,6 +12,8 @@ npm install @twobitedd/ergo-account-model
 ## Public API
 
 - `buildAccountSession(input)` for pure session derivation.
+- **`DynamicUserInput`** and **`mapDynamicSdkUserToDynamicUserInput(user)`** for
+  Dynamic.xyz SDK user → session bridge (no `@dynamic-labs/*` dependency).
 - `buildAccountStateSnapshot({ session })` for canonical account state (`GUEST | REGISTERED | WALLET_BOUND`).
 - `buildAccountConversionSnapshot({ session })` for account conversion posture and next target state.
 - `buildAccountExportArtifact(input)` for portable wallet/account backup payloads.
@@ -84,6 +86,28 @@ const session = buildAccountSession({
   walletSource: "nautilus-direct",
   ergoAddress: "9hExampleAddress",
   dynamicUser: null,
+  vault: null,
+  nautilusApiAvailable: true,
+});
+```
+
+With **Dynamic.xyz** (or any compatible `user` object), map into the session contract:
+
+```ts
+import {
+  buildAccountSession,
+  mapDynamicSdkUserToDynamicUserInput,
+} from "@twobitedd/ergo-account-model";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+
+const { user } = useDynamicContext();
+const dynamicUser = mapDynamicSdkUserToDynamicUserInput(user);
+
+const session = buildAccountSession({
+  walletConnected: true,
+  walletSource: "dynamic-nautilus",
+  ergoAddress: "9h…",
+  dynamicUser,
   vault: null,
   nautilusApiAvailable: true,
 });
